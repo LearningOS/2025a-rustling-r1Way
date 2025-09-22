@@ -8,9 +8,12 @@
 // Execute `rustlings hint lifetimes1` or use the `hint` watch subcommand for a
 // hint.
 
-// I AM NOT DONE
 
-fn longest(x: &str, y: &str) -> &str {
+
+//在 Rust 里，如果一个函数的参数和返回值都是引用，
+// 编译器需要知道它们的生命周期之间的关系。
+// 否则，可能会出现悬垂引用（dangling reference）的问题。
+fn longest<'a>(x: &'a str, y: &'a str) -> &'a str {
     if x.len() > y.len() {
         x
     } else {
