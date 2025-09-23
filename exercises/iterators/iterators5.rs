@@ -11,7 +11,6 @@
 // Execute `rustlings hint iterators5` or use the `hint` watch subcommand for a
 // hint.
 
-// I AM NOT DONE
 
 use std::collections::HashMap;
 
@@ -24,7 +23,7 @@ enum Progress {
 
 fn count_for(map: &HashMap<String, Progress>, value: Progress) -> usize {
     let mut count = 0;
-    for val in map.values() {
+    for val in map.values() {//map.values()返回的是对值的引用
         if val == &value {
             count += 1;
         }
@@ -35,7 +34,7 @@ fn count_for(map: &HashMap<String, Progress>, value: Progress) -> usize {
 fn count_iterator(map: &HashMap<String, Progress>, value: Progress) -> usize {
     // map is a hashmap with String keys and Progress values.
     // map = { "variables1": Complete, "from_str": None, ... }
-    todo!();
+    map.values().filter(|&v| v==&value).count()
 }
 
 fn count_collection_for(collection: &[HashMap<String, Progress>], value: Progress) -> usize {
@@ -54,7 +53,10 @@ fn count_collection_iterator(collection: &[HashMap<String, Progress>], value: Pr
     // collection is a slice of hashmaps.
     // collection = [{ "variables1": Complete, "from_str": None, ... },
     //     { "variables2": Complete, ... }, ... ]
-    todo!();
+    collection.iter().flat_map(|c| c.values()).filter(|&v| v == &value).count()
+    //flat_map 是迭代器上的一个方法，它结合了 map 和 flatten 的功能：
+    // 先对迭代器的每个元素进行映射（map），然后将映射结果 “扁平化”（flatten）
+    // 成一个单一的迭代器。
 }
 
 #[cfg(test)]
