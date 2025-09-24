@@ -12,7 +12,10 @@
 //
 // Execute `rustlings hint cow1` or use the `hint` watch subcommand for a hint.
 
-// I AM NOT DONE
+
+//关键在于，只要Cow拥有所有权了，或者发生了修改（clone on write),最后就是Owed(_)
+
+//Cow::Borrowed与 Cow::Owned是Cow枚举的一个变体
 
 use std::borrow::Cow;
 
@@ -48,7 +51,8 @@ mod tests {
         let slice = [0, 1, 2];
         let mut input = Cow::from(&slice[..]);
         match abs_all(&mut input) {
-            // TODO
+            Cow::Borrowed(_)=>Ok(()),
+            _ => Err("Expected borrowed value"),
         }
     }
 
@@ -60,7 +64,8 @@ mod tests {
         let slice = vec![0, 1, 2];
         let mut input = Cow::from(slice);
         match abs_all(&mut input) {
-            // TODO
+            Cow::Owned(_) => Ok(()),
+            _ => Err("Expected owned value"),
         }
     }
 
@@ -73,6 +78,8 @@ mod tests {
         let mut input = Cow::from(slice);
         match abs_all(&mut input) {
             // TODO
+            Cow::Owned(_) => Ok(()),
+            _ => Err("Expected owned value"),
         }
     }
 }

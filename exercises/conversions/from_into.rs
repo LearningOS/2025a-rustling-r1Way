@@ -31,19 +31,42 @@ impl Default for Person {
 //
 // Steps:
 // 1. If the length of the provided string is 0, then return the default of
-//    Person.
+//    Person.解析字符串为空
 // 2. Split the given string on the commas present in it.
-// 3. Extract the first element from the split operation and use it as the name.
+// 3. Extract the first element from the split operation and use it as the name.  
+//    "20".parse::<usize>()
 // 4. If the name is empty, then return the default of Person.
 // 5. Extract the other element from the split operation and parse it into a
 //    `usize` as the age.
 // If while parsing the age, something goes wrong, then return the default of
 // Person Otherwise, then return an instantiated Person object with the results
 
-// I AM NOT DONE
 
 impl From<&str> for Person {
     fn from(s: &str) -> Person {
+      if s.is_empty(){
+        return Person::default();
+      }
+      // 2. 用逗号分割
+      let parts: Vec<&str> = s.split(',').collect();
+      if parts.len()!=2{
+        return Person::default();
+      }
+
+      let name =parts[0].trim();//trim去除首位的空白字符
+      if name.is_empty(){
+        return Person::default();
+      }
+
+      if let Ok(age) =parts[1].trim().parse::<usize>(){
+        Person{
+          name:name.to_string(),
+          age,
+        }
+      }
+      else{
+        Person::default()
+      }
     }
 }
 
