@@ -53,16 +53,16 @@ impl From<&str> for Person {
         return Person::default();
       }
 
-      let name =parts[0].trim();//trim去除首位的空白字符
+      let name =parts[0].trim();//trim去除首尾的空白字符
       if name.is_empty(){
         return Person::default();
       }
 
       if let Ok(age) =parts[1].trim().parse::<usize>(){
-        Person{
+        return Person{
           name:name.to_string(),
           age,
-        }
+        };
       }
       else{
         Person::default()
