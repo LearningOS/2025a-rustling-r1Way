@@ -73,7 +73,7 @@ impl<T> LinkedList<T> {
         }
     }
 	pub fn reverse(&mut self){
-		// TODO
+		// TODO: 
 	}
 }
 

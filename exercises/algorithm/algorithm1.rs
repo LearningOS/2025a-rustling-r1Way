@@ -2,7 +2,6 @@
 	single linked list merge
 	This problem requires you to merge two ordered singly linked lists into one ordered singly linked list
 */
-// I AM NOT DONE
 
 use std::fmt::{self, Display, Formatter};
 use std::ptr::NonNull;
@@ -35,7 +34,7 @@ impl<T> Default for LinkedList<T> {
     }
 }
 
-impl<T> LinkedList<T> {
+impl<T> LinkedList<T>{
     pub fn new() -> Self {
         Self {
             length: 0,
@@ -43,6 +42,9 @@ impl<T> LinkedList<T> {
             end: None,
         }
     }
+}
+
+impl<T: PartialOrd + Clone> LinkedList<T> {
 
     pub fn add(&mut self, obj: T) {
         let mut node = Box::new(Node::new(obj));
@@ -50,17 +52,17 @@ impl<T> LinkedList<T> {
         let node_ptr = Some(unsafe { NonNull::new_unchecked(Box::into_raw(node)) });
         match self.end {
             None => self.start = node_ptr,
-            Some(end_ptr) => unsafe { (*end_ptr.as_ptr()).next = node_ptr },
+            Some(end_ptr) => unsafe { (*end_ptr.as_ptr()).next = node_ptr },//.优先级高于*
         }
         self.end = node_ptr;
         self.length += 1;
     }
 
-    pub fn get(&mut self, index: i32) -> Option<&T> {
+    pub fn get(&self, index: i32) -> Option<&T> {
         self.get_ith_node(self.start, index)
     }
 
-    fn get_ith_node(&mut self, node: Option<NonNull<Node<T>>>, index: i32) -> Option<&T> {
+    fn get_ith_node(&self, node: Option<NonNull<Node<T>>>, index: i32) -> Option<&T> {
         match node {
             None => None,
             Some(next_ptr) => match index {
@@ -69,14 +71,46 @@ impl<T> LinkedList<T> {
             },
         }
     }
-	pub fn merge(list_a:LinkedList<T>,list_b:LinkedList<T>) -> Self
+	pub fn merge(mut list_a:LinkedList<T>,mut list_b:LinkedList<T>) -> Self
 	{
-		//TODO
-		Self {
-            length: 0,
-            start: None,
-            end: None,
-        }
+    //从小到大进行排序
+		// TODO: 
+    let mut list_ret = LinkedList::<T>::new();
+    let mut i=0i32;
+    let mut j=0i32;
+    let a_len:i32 =list_a.length.try_into().unwrap();
+    let b_len:i32 =list_b.length.try_into().unwrap();
+
+    while !(i==a_len|| j==b_len)
+    {
+      let a =list_a.get(i).unwrap();
+      let b =list_b.get(j).unwrap();
+      if *a>*b{
+        list_ret.add((*b).clone());
+        j+=1; 
+      }
+      else{
+        list_ret.add((*a).clone());
+        i+=1;
+      }
+    }
+
+    if i==a_len{
+      while j!=b_len{
+        let b =list_b.get(j).unwrap();
+        list_ret.add((*b).clone());
+        j+=1;
+      }
+    }
+
+    if j==b_len{
+      while i!=a_len{
+        let a =list_a.get(i).unwrap();
+        list_ret.add((*a).clone());
+        i+=1;
+      }
+    }
+    list_ret
 	}
 }
 
