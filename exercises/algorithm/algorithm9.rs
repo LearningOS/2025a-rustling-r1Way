@@ -1,12 +1,12 @@
 /*
-	heap
-	This question requires you to implement a binary heap function
+    heap
+    This question requires you to implement a binary heap function
 */
-// I AM NOT DONE
 
 use std::cmp::Ord;
 use std::default::Default;
 
+//实现二叉堆
 pub struct Heap<T>
 where
     T: Default,
@@ -37,13 +37,29 @@ where
     }
 
     pub fn add(&mut self, value: T) {
-        //TODO
+        //TODO:
+        self.items.push(value);
+        self.count += 1;
+        //根节点的下标为1
+        let mut idx = self.count;
+        while idx > 1 {
+            let parent = self.parent_idx(idx);
+            // 先取出引用，避免借用冲突
+            let should_swap = (self.comparator)(&self.items[idx], &self.items[parent]);
+            if should_swap {
+                self.items.swap(idx, parent);
+                idx = parent;
+            } else {
+                break;
+            }
+        }
     }
 
     fn parent_idx(&self, idx: usize) -> usize {
         idx / 2
     }
 
+    //判断某个节点是否有子节点
     fn children_present(&self, idx: usize) -> bool {
         self.left_child_idx(idx) <= self.count
     }
@@ -57,8 +73,16 @@ where
     }
 
     fn smallest_child_idx(&self, idx: usize) -> usize {
-        //TODO
-		0
+        //TODO:
+        let left = self.left_child_idx(idx);
+        let right = self.right_child_idx(idx);
+        if right > self.count {
+            left // 只有左子节点
+        } else if (self.comparator)(&self.items[left], &self.items[right]) {
+            left
+        } else {
+            right
+        }
     }
 }
 
@@ -79,13 +103,38 @@ where
 
 impl<T> Iterator for Heap<T>
 where
-    T: Default,
+    T: Default + Clone,
 {
     type Item = T;
 
     fn next(&mut self) -> Option<T> {
-        //TODO
-		None
+        if self.count == 0 {
+            return None;
+        }
+        // 先把最后一个元素 clone 出来，避免借用冲突
+        let last = self.items[self.count].clone();
+        let top = std::mem::replace(&mut self.items[1], last);
+        self.items.pop();
+        self.count -= 1;
+
+        // 2. 下沉调整
+        let mut idx = 1;
+        while self.children_present(idx) {
+            //如果还有子节点
+            //获取两个(可能也只有一个)子节点中较小的一个
+            let child_idx = if self.right_child_idx(idx) > self.count {
+                self.left_child_idx(idx)
+            } else {
+                self.smallest_child_idx(idx)
+            };
+            if (self.comparator)(&self.items[child_idx], &self.items[idx]) {
+                self.items.swap(idx, child_idx);
+                idx = child_idx;
+            } else {
+                break;
+            }
+        }
+        Some(top)
     }
 }
 
